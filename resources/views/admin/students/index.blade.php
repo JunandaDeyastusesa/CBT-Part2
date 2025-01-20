@@ -16,7 +16,7 @@
             class="w-[270px] flex flex-col shrink-0 min-h-screen justify-between p-[30px] border-r border-[#EEEEEE] bg-[#FBFBFB]">
             <div class="w-full flex flex-col gap-[30px]">
                 <a href="index.html" class="flex items-center justify-center">
-                     <img class="w-[100px]" src="{{ asset('images/logo/logo-digisite.png') }}" alt="logo">
+                    <img class="w-[100px]" src="{{ asset('images/logo/logo-digisite.png') }}" alt="logo">
                 </a>
                 <ul class="flex flex-col gap-3">
                     <li>
@@ -32,25 +32,28 @@
                     <!--    </a>-->
                     <!--</li>-->
                     <li>
-                        <a href="" class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 bg-[#2B82FE] transition-all duration-300 hover:bg-[#2B82FE]">
+                        <a href=""
+                            class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 bg-[#2B82FE] transition-all duration-300 hover:bg-[#2B82FE]">
                             <div>
-                                <img src="{{asset('/images/icons/note-favorite.svg')}}" alt="icon">
+                                <img src="{{ asset('/images/icons/note-favorite.svg') }}" alt="icon">
                             </div>
                             <p class="font-semibold text-white transition-all duration-300 hover:text-white">Courses</p>
                         </a>
                     </li>
                     <li>
-                        <a href="" class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300 hover:bg-[#2B82FE]">
+                        <a href=""
+                            class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300 hover:bg-[#2B82FE]">
                             <div>
-                                <img src="{{asset('/images/icons/profile-2user.svg')}}" alt="icon">
+                                <img src="{{ asset('/images/icons/profile-2user.svg') }}" alt="icon">
                             </div>
                             <p class="font-semibold transition-all duration-300 hover:text-white">Students</p>
                         </a>
                     </li>
                     <li>
-                        <a href="" class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300 hover:bg-[#2B82FE]">
+                        <a href=""
+                            class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300 hover:bg-[#2B82FE]">
                             <div>
-                                <img src="{{asset('/images/icons/chart-2.svg')}}" alt="icon">
+                                <img src="{{ asset('/images/icons/chart-2.svg') }}" alt="icon">
                             </div>
                             <p class="font-semibold transition-all duration-300 hover:text-white">Analytics</p>
                         </a>
@@ -61,7 +64,7 @@
                             <button type="submit"
                                 class="p-[10px_16px] flex items-center gap-[14px] rounded-full h-11 transition-all duration-300 hover:bg-[#2B82FE]">
                                 <div>
-                                    <img src="{{asset('images/icons/security-safe.svg')}}" alt="icon">
+                                    <img src="{{ asset('images/icons/security-safe.svg') }}" alt="icon">
                                 </div>
                                 <p class="font-semibold transition-all duration-300 hover:text-white">Logout</p>
                             </button>
@@ -108,7 +111,8 @@
                 <div class="breadcrumb flex items-center gap-[30px]">
                     <a href="#" class="text-[#7F8190] last:text-[#0A090B] last:font-semibold">Home</a>
                     <span class="text-[#7F8190] last:text-[#0A090B]">/</span>
-                    <a href="{{route('dashboard.courses.index')}}" class="text-[#7F8190] last:text-[#0A090B] last:font-semibold">Manage
+                    <a href="{{ route('dashboard.courses.index') }}"
+                        class="text-[#7F8190] last:text-[#0A090B] last:font-semibold">Manage
                         Courses</a>
                     <span class="text-[#7F8190] last:text-[#0A090B]">/</span>
                     <a href="#" class="text-[#7F8190] last:text-[#0A090B] last:font-semibold ">Course
@@ -144,7 +148,7 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <a href="{{route('dashboard.course.course_students.create', $course)}}"
+                    <a href="{{ route('dashboard.course.course_students.create', $course) }}"
                         class="h-[52px] p-[14px_30px] bg-[#6436F1] rounded-full font-bold text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D]">Add
                         Student</a>
                 </div>
@@ -161,14 +165,15 @@
                                         class="w-full h-full object-cover" alt="photo">
                                 </div>
                                 <div class="flex flex-col gap-[2px]">
-                                    <p class="font-bold text-lg">{{$student->name}}</p>
-                                    <p class="text-[#7F8190]">{{$student->email}}</p>
+                                    <p class="font-bold text-lg">{{ $student->name }}</p>
+                                    <p class="text-[#7F8190]">{{ $student->email }}</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-[14px]">
                                 <p
                                     class="p-[6px_10px] rounded-[10px] bg-[#06BC65] font-bold text-md text-white outline-[#06BC65] outline-dashed outline-[2px] outline-offset-[4px] mr-[6px]">
-                                    {{$correctAnswersCount}}</p>
+                                    {{ $studentScores[$student->id] ?? 0 }}
+                                </p>
                             </div>
                         </div>
                     @empty

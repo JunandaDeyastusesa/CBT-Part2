@@ -17,30 +17,44 @@ class CourseStudentController extends Controller
      * Display a listing of the resource.
      */
     public function index(Course $course)
-{
-    $students = $course->students()->orderBy('id','DESC')->get();
-    $questions = $course->questions()->orderBy('id', 'DESC')->get();
-    $totalQuestions = $questions->count();
+    {
+        $students = $course->students()->orderBy('id', 'DESC')->get();
+        $questions = $course->questions()->orderBy('id', 'DESC')->get();
+        $totalQuestions = $questions->count();
 
-    $correctAnswersCount = 0; // Inisialisasi variabel untuk menyimpan total skor
+        $studentScores = []; // Array untuk menyimpan skor per siswa
 
-    foreach ($students as $student) {
-        $studentAnswers = StudentAnswer::whereHas('question', function ($query) use ($course) {
-            $query->where('course_id', $course->id);
-        })->where('user_id', $student->id)->get();
+        foreach ($students as $student) {
+            $studentAnswers = StudentAnswer::whereHas('question', function ($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })->where('user_id', $student->id)->get();
 
-        // Hitung skor untuk jawaban siswa ini
-        $studentScore = $studentAnswers->sum('answer'); // Asumsikan kolom 'score' ada di tabel StudentAnswer
-        $correctAnswersCount += $studentScore; // Tambahkan skor siswa ke total skor
+            $studentScore = $studentAnswers->sum(function ($studentAnswer) {
+                $selectedAnswer = $studentAnswer->question->answers
+                    ->where('id', $studentAnswer->answer_id)
+                    ->first();
+
+                return $selectedAnswer ? $selectedAnswer->score : 0;
+            });
+
+            $studentScores[$student->id] = $studentScore;
+        }
+
+        // Urutkan siswa berdasarkan skor dari tinggi ke rendah
+        arsort($studentScores);
+
+        // Buat daftar siswa terurut berdasarkan ID yang ada di $studentScores
+        $sortedStudents = collect($studentScores)->keys()->map(function ($id) use ($students) {
+            return $students->where('id', $id)->first();
+        });
+
+        return view("admin.students.index", [
+            'course' => $course,
+            'questions' => $questions,
+            'students' => $sortedStudents, // Kirim siswa terurut
+            'studentScores' => $studentScores, // Kirim skor siswa
+        ]);
     }
-
-    return view("admin.students.index", [
-        'course' => $course,
-        'questions' => $questions,
-        'students' => $students,
-        'correctAnswersCount' => $correctAnswersCount
-    ]);
-}
 
 
     /**
@@ -49,9 +63,9 @@ class CourseStudentController extends Controller
     public function create(Course $course)
     {
         //
-        $students = $course->students()->orderBy('id','DESC')->get();
+        $students = $course->students()->orderBy('id', 'DESC')->get();
         return view("admin.students.add_student", [
-            'course'=> $course,
+            'course' => $course,
             'students' => $students
         ]);
     }
@@ -69,14 +83,14 @@ class CourseStudentController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            $error = ValidationException::withMessages(['system_error'=> 'Email student tidak tersedia!']);
+            $error = ValidationException::withMessages(['system_error' => 'Email student tidak tersedia!']);
             throw $error;
         }
 
         $isEnrolled = $course->students()->where('user_id', $user->id)->exists();
 
         if ($isEnrolled) {
-            $error = ValidationException::withMessages(['system_error'=> 'Student sudah berada di course tersebut']);
+            $error = ValidationException::withMessages(['system_error' => 'Student sudah berada di course tersebut']);
             throw $error;
         }
 
@@ -86,10 +100,10 @@ class CourseStudentController extends Controller
             $course->students()->attach($user->id);
             DB::commit();
             return redirect()->route('dashboard.course.course_students.create', $course);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             $error = ValidationException::withMessages([
-                'system_error'=> ['System error!' . $e->getMessage()],
+                'system_error' => ['System error!' . $e->getMessage()],
             ]);
             throw $error;
         }

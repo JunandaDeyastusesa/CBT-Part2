@@ -49,51 +49,61 @@
             </div>
 
             <!--FORM INPUT-->
-            <form id="answerForm" method="POST" action="{{ route('dashboard.learning.course.answer.store', ['course' => $course->id, 'question' => $question->id]) }}" class="learning flex flex-col gap-8 items-center mt-7 w-full pb-8 px-5 md:px-0">
+            <form id="answerForm" method="POST"
+                action="{{ route('dashboard.learning.course.answer.store', ['course' => $course->id, 'question' => $question->id]) }}"
+                class="learning flex flex-col gap-8 items-center mt-7 w-full pb-8 px-5 md:px-0">
                 @csrf
-                <div id="image-preview-question" class="{{ $question->type == 'image' ? '' : 'hidden' }} relative w-[100%] md:w-[60%] overflow-hidden peer-data-[empty=true]:border-[3px] peer-data-[empty=true]:border-dashed peer-data-[empty=true]:border-[#EEEEEE]">
-                    <div class="relative file-preview z-10 w-full h-full {{ $question->type == 'image' ? '' : 'hidden' }}">
+                <div id="image-preview-question"
+                    class="{{ $question->type == 'image' ? '' : 'hidden' }} relative w-[100%] md:w-[60%] overflow-hidden peer-data-[empty=true]:border-[3px] peer-data-[empty=true]:border-dashed peer-data-[empty=true]:border-[#EEEEEE]">
+                    <div
+                        class="relative file-preview z-10 w-full h-full {{ $question->type == 'image' ? '' : 'hidden' }}">
                         @if ($question->type == 'image' && $question->question)
-                            <img src="{{ asset('storage/' . $question->question) }}" class="thumbnail-icon w-full object-cover" alt="thumbnail">
+                            <img src="{{ asset('storage/' . $question->question) }}"
+                                class="thumbnail-icon w-full object-cover" alt="thumbnail">
                         @endif
                     </div>
                 </div>
-            
-                <h1 class="{{ $question->type == 'text' ? '' : 'hidden' }} w-[100%] md:w-[90%] my-0 font-extrabold text-[16px] leading-[30px] md:leading-[30px] text-center">
+
+                <h1
+                    class="{{ $question->type == 'text' ? '' : 'hidden' }} w-[100%] md:w-[90%] my-0 font-extrabold text-[16px] leading-[30px] md:leading-[30px] text-center">
                     [ {{ $question->number }}. ] {{ $question->question }}
                 </h1>
-            
+
                 <div class="flex flex-col gap-3 md:gap-4 w-full max-w-[100%] md:w-[90%] mb-5">
                     @foreach ($question->answers as $i => $answer)
                         @php
                             $isChecked = $studentAnswer && $studentAnswer->answer_id == $answer->id ? 'checked' : '';
                         @endphp
-                        <label for="answer-{{ $i }}" class="group flex items-center justify-between rounded-full w-full border border-[#EEEEEE] p-3 transition-all duration-300 has-[:checked]:border-2 has-[:checked]:border-[#0A090B]">
+                        <label for="answer-{{ $i }}"
+                            class="group flex items-center justify-between rounded-full w-full border border-[#EEEEEE] p-3 transition-all duration-300 has-[:checked]:border-2 has-[:checked]:border-[#0A090B]">
                             <div class="flex items-center gap-3">
                                 <img src="{{ asset('/images/icons/arrow-circle-right.svg') }}" alt="icon">
-            
+
                                 @if ($answer->type == 'text')
-                                    <span class="font-extrabold text-[16px] text-base md:text-md">{{ $answer->answer ?? '' }}</span>
+                                    <span
+                                        class="font-extrabold text-[16px] text-base md:text-md">{{ $answer->answer ?? '' }}</span>
                                 @endif
-            
+
                                 @if ($answer->type == 'image' && $answer->answer)
-                                    <img class="w-[200px]" src="{{ asset('storage/' . $answer->answer) }}" class="thumbnail-icon w-[50px] h-[50px] object-cover" alt="image-answer">
+                                    <img class="w-[200px]" src="{{ asset('storage/' . $answer->answer) }}"
+                                        class="thumbnail-icon w-[50px] h-[50px] object-cover" alt="image-answer">
                                 @endif
                             </div>
-            
+
                             <div class="hidden group-has-[:checked]:block">
                                 <img src="{{ asset('/images/icons/tick-circle.svg') }}" alt="tick-icon">
                             </div>
-            
-                            <input type="radio" name="answer_id" id="answer-{{ $i }}" value="{{ $answer->id }}" class="hidden" {{ $isChecked }}>
+
+                            <input type="radio" name="answer_id" id="answer-{{ $i }}"
+                                value="{{ $answer->id }}" class="hidden" {{ $isChecked }}>
                         </label>
                     @endforeach
                 </div>
             </form>
-            
+
             <script>
                 document.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.addEventListener('click', function () {
+                    radio.addEventListener('click', function() {
                         if (this.checked) {
                             // Jika radio button diklik dua kali, uncheck
                             if (this.getAttribute('data-clicked') === 'true') {
@@ -106,19 +116,22 @@
                     });
                 });
             </script>
-            
+
             <!-- Div untuk tombol Lanjut dan Kembali -->
             <div class="flex justify-between w-full mt-4 gap-4"> <!-- Menghapus max-w-[90%] -->
                 <!-- Form untuk tombol kembali -->
-                <form method="POST" action="{{ route('dashboard.learning.course.answer.back', ['course' => $course->id, 'question' => $question->id]) }}">
+                <form method="POST"
+                    action="{{ route('dashboard.learning.course.answer.back', ['course' => $course->id, 'question' => $question->id]) }}">
                     @csrf
-                    <button type="submit" id="previousBtn" class="w-fit p-[14px_40px] bg-[#e05d28] rounded-full font-bold text-sm text-white transition-all duration-300 hover:bg-[#ff6f61] hover:shadow-[0_4px_15px_0_#6436F14D] text-center {{ $question->number == 1 ? 'opacity-50 cursor-not-allowed' : '' }}" {{ $question->number == 1 ? 'disabled' : '' }} style="margin-right: 8px;">
+                    <button type="submit" id="previousBtn"
+                        class="w-fit p-[14px_40px] bg-[#e05d28] rounded-full font-bold text-sm text-white transition-all duration-300 hover:bg-[#ff6f61] hover:shadow-[0_4px_15px_0_#6436F14D] text-center {{ $question->number == 1 ? 'opacity-50 cursor-not-allowed' : '' }}"
+                        {{ $question->number == 1 ? 'disabled' : '' }} style="margin-right: 8px;">
                         Kembali
                     </button>
                 </form>
-                
+
                 <!-- Cek apakah ini pertanyaan terakhir -->
-                @if($question->number == $questions->max('number'))
+                @if ($question->number == $questions->max('number'))
                     <!-- Tombol Finish dengan Konfirmasi -->
                     <button type="button" id="finishBtn"
                         class="w-fit p-[14px_40px] bg-[#6436F1] rounded-full font-bold text-sm text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D] text-center">
@@ -127,16 +140,17 @@
                 @else
                     <!-- Tombol Lanjut (submit) -->
                     <button type="button" id="nextBtn"
-                        class="w-fit p-[14px_40px] bg-[#6436F1] rounded-full font-bold text-sm text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D] text-center ml-4"> <!-- Menambahkan margin left -->
+                        class="w-fit p-[14px_40px] bg-[#6436F1] rounded-full font-bold text-sm text-white transition-all duration-300 hover:shadow-[0_4px_15px_0_#6436F14D] text-center ml-4">
+                        <!-- Menambahkan margin left -->
                         Lanjut
                     </button>
                 @endif
             </div>
 
 
-            
+
             <script>
-                document.getElementById('nextBtn').addEventListener('click', function () {
+                document.getElementById('nextBtn').addEventListener('click', function() {
                     // Validasi bahwa jawaban telah dipilih
                     const selectedAnswer = document.querySelector('input[name="answer_id"]');
                     if (selectedAnswer) {
@@ -164,7 +178,7 @@
                             // Cek apakah siswa sudah menjawab pertanyaan ini
                             $studentAnswer = $allStudentAnswers->where('course_question_id', $question->id)->first();
                             // Jika sudah menjawab, ganti warna latar belakang
-                            $bgColor = $studentAnswer ? 'bg-green-500 text-white'  : 'bg-gray-200 text-black';
+                            $bgColor = $studentAnswer ? 'bg-green-500 text-white' : 'bg-gray-200 text-black';
                         @endphp
                         <a href="{{ route('dashboard.learning.course', ['course' => $course->id, 'question' => $question->id]) }}"
                             class="{{ $bgColor }} rounded-md text-center py-2">
@@ -175,38 +189,34 @@
             </div>
         </div>
     </section>
-    
+
     <!-- Konten lain dari halaman -->
 
-<!-- Import SweetAlert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Import SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Script custom untuk tombol Finish -->
-<script>
-    document.getElementById('finishBtn').addEventListener('click', function (event) {
-        event.preventDefault(); // Mencegah submit otomatis
+    <!-- Script custom untuk tombol Finish -->
+    <script>
+        document.getElementById('finishBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah submit otomatis
 
-        Swal.fire({
-            title: 'Apakah kamu yakin?',
-            text: "Apakah kamu sudah menjawab semua pertanyaan?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Iya, selesai!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Kirim form untuk menyimpan jawaban
-                document.querySelector('form.learning').submit();
-            }
+            Swal.fire({
+                title: 'Apakah kamu yakin?',
+                text: "Apakah kamu sudah menjawab semua pertanyaan?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Iya, selesai!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim form untuk menyimpan jawaban
+                    document.querySelector('form.learning').submit();
+                }
+            });
         });
-    });
-</script>
-
-</body>
-</html>
-
+    </script>
 
     <script>
         document.getElementById('hamburger').addEventListener('click', function(e) {
@@ -260,11 +270,10 @@
                 overlay.style.display = 'none';
             }, 0);
         });
-        
-        document.getElementById('previousBtn').addEventListener('click', function () {
-        window.history.back(); // Mengembalikan ke halaman sebelumnya
-        });
 
+        document.getElementById('previousBtn').addEventListener('click', function() {
+            window.history.back(); // Mengembalikan ke halaman sebelumnya
+        });
     </script>
 
 
